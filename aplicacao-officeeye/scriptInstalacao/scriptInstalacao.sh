@@ -293,6 +293,6 @@ if [ "$run" == "s" ];
     cd target/
     java -jar aplicacao-officeeye-1.0-SNAPSHOT-jar-with-dependencies.jar
     else 
-    echo "hkedjfhgjfklkjhjkldjfkldjfkljfg"
-
+    echo "Aplicação não está rodando"
+    exit 0
 fi
