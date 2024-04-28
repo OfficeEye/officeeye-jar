@@ -64,7 +64,7 @@ fi
 # A partir daqui, a execução do MySQL e a criação do banco de dados e tabelas estão corretas
 
 echo "Login para acessar o banco de dados"
-sudo mysql
+sudo mysql -u root 
 <<EOF
 CREATE USER 'officeEye'@'%' IDENTIFIED BY 'officeEye';
 
