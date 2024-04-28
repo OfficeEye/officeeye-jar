@@ -64,9 +64,12 @@ fi
 # A partir daqui, a execução do MySQL e a criação do banco de dados e tabelas estão corretas
 
 echo "Login para acessar o banco de dados"
-sudo mysql -u root -p officeeye123 <<EOF
+sudo mysql
+<<EOF
+CREATE USER 'officeEye'@'%' IDENTIFIED BY 'officeEye';
 
 CREATE DATABASE IF NOT EXISTS officeEye;
+GRANT ALL PRIVILEGES ON officeEye.* TO 'officeEye'@'%';
 
 USE officeEye;
 
@@ -210,7 +213,7 @@ CREATE TABLE HistoricoChamados (
 EOF
 
 echo "Populando as tabelas e configurando o banco de dados..."
-sudo mysql -u root -p officeeye123 <<EOF
+sudo mysql -u officeEye -p officeEye <<EOF
 
 use officeEye;
 
