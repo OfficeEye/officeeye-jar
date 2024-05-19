@@ -80,8 +80,8 @@ public class TesteOfficeEye {
 
                if (maquinaFuncionario.get(0).getSistemaOperacional() == null){
 
-                   con.update("UPDATE maquina SET fabricante = ?,"
-                                   + "sistemaOperacional  = ? WHERE idmaquina= ?",
+                   con.update("UPDATE maquina SET fabricanteSO = ?,"
+                                   + "sistemaOperacional  = ? WHERE idMaquina= ?",
                            maquina.getFabricante(), maquina.getSistemaOperacional(), maquina.getIdMaquina());
                }
 
@@ -91,16 +91,16 @@ public class TesteOfficeEye {
                Double frequenciaProcessador = looca.getProcessador().getFrequencia().doubleValue()/conversor;
 
 
-               con.update("UPDATE especificacaoComponentes SET informacaoTotalEspecificacao = ?"
-                               + "WHERE fkMaquina= ? and idEspecificacaoComponentes = 1",
+               con.update("UPDATE especificacaoComponente SET informacaoTotalEspecificacao = ?"
+                               + "WHERE fkMaquina= ? and idEspecificacaoComponente = 1",
                        tamanhoTotal, maquina.getIdMaquina());
 
-               con.update("UPDATE especificacaoComponentes SET informacaoTotalEspecificacao = ?"
-                               + "WHERE fkMaquina= ? and idEspecificacaoComponentes = 2 ",
+               con.update("UPDATE especificacaoComponente SET informacaoTotalEspecificacao = ?"
+                               + "WHERE fkMaquina= ? and idEspecificacaoComponente = 2 ",
                        memoriaTotal, maquina.getIdMaquina());
 
-               con.update("UPDATE especificacaoComponentes SET informacaoTotalEspecificacao = ?"
-                               + "WHERE fkMaquina= ? and idEspecificacaoComponentes = 3 ",
+               con.update("UPDATE especificacaoComponente SET informacaoTotalEspecificacao = ?"
+                               + "WHERE fkMaquina= ? and idEspecificacaoComponente = 3 ",
                        frequenciaProcessador, maquina.getIdMaquina());
 
                EspecificacaoComponente especificacaoComponente = new EspecificacaoComponente();
@@ -112,20 +112,20 @@ public class TesteOfficeEye {
                    public void run() {
                        if (verificacaoLogin) {
                            //disco - Espaço disponivel
-                           con.update("INSERT INTO registrosEspecificacaoComponente (dataHoraRegistro, registroNumero, tipoRegistro, fkEspecificacaoComponentes, fkComponente, fkMaquina, fkFuncionario, fkEmpresa) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                                   LocalDateTime.now(), looca.getGrupoDeDiscos().getVolumes().get(0).getDisponivel().doubleValue()/conversor, "Espaço disponível", especificacoesDaMaquina.get(0).getIdEspecificacaoComponentes(), 1, maquina.getIdMaquina(), login.getIdFuncionario(), maquina.getFkEmpresa());
+                           con.update("INSERT INTO registroEspecificacaoComponente (dataHoraRegistro, registroNumero, tipoRegistro, fkEspecificacaoComponente, fkComponente, fkMaquina, fkFuncionario, fkEmpresa) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                                   LocalDateTime.now(), looca.getGrupoDeDiscos().getVolumes().get(0).getDisponivel().doubleValue()/conversor, "Espaço disponível", especificacoesDaMaquina.get(0).getIdEspecificacaoComponente(), 1, maquina.getIdMaquina(), login.getIdFuncionario(), maquina.getFkEmpresa());
                            //memoria - Memória em uso
-                           con.update("INSERT INTO registrosEspecificacaoComponente (dataHoraRegistro, registroNumero, tipoRegistro, fkEspecificacaoComponentes, fkComponente, fkMaquina, fkFuncionario, fkEmpresa) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                                   LocalDateTime.now(), looca.getMemoria().getEmUso().doubleValue()/conversor, "Memória em uso", especificacoesDaMaquina.get(1).getIdEspecificacaoComponentes(), 2, maquina.getIdMaquina(), login.getIdFuncionario(), maquina.getFkEmpresa());
+                           con.update("INSERT INTO registroEspecificacaoComponente (dataHoraRegistro, registroNumero, tipoRegistro, fkEspecificacaoComponente, fkComponente, fkMaquina, fkFuncionario, fkEmpresa) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                                   LocalDateTime.now(), looca.getMemoria().getEmUso().doubleValue()/conversor, "Memória em uso", especificacoesDaMaquina.get(1).getIdEspecificacaoComponente(), 2, maquina.getIdMaquina(), login.getIdFuncionario(), maquina.getFkEmpresa());
                            //cpu - Uso do processador
-                           con.update("INSERT INTO registrosEspecificacaoComponente (dataHoraRegistro, registroNumero, tipoRegistro, fkEspecificacaoComponentes, fkComponente, fkMaquina, fkFuncionario, fkEmpresa) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                                   LocalDateTime.now(), looca.getProcessador().getUso().doubleValue()/conversor, "Uso do processador", especificacoesDaMaquina.get(2).getIdEspecificacaoComponentes(), 3, maquina.getIdMaquina(), login.getIdFuncionario(), maquina.getFkEmpresa());
+                           con.update("INSERT INTO registroEspecificacaoComponente (dataHoraRegistro, registroNumero, tipoRegistro, fkEspecificacaoComponente, fkComponente, fkMaquina, fkFuncionario, fkEmpresa) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                                   LocalDateTime.now(), looca.getProcessador().getUso().doubleValue()/conversor, "Uso do processador", especificacoesDaMaquina.get(2).getIdEspecificacaoComponente(), 3, maquina.getIdMaquina(), login.getIdFuncionario(), maquina.getFkEmpresa());
                            //Total de processos
-                           con.update("INSERT INTO registrosEspecificacaoComponente (dataHoraRegistro, registroNumero, tipoRegistro, fkEspecificacaoComponentes, fkComponente, fkMaquina, fkFuncionario, fkEmpresa) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                                   LocalDateTime.now(), looca.getGrupoDeProcessos().getTotalProcessos(), "Total de processos", especificacoesDaMaquina.get(2).getIdEspecificacaoComponentes(), 3, maquina.getIdMaquina(), login.getIdFuncionario(), maquina.getFkEmpresa());
+                           con.update("INSERT INTO registroEspecificacaoComponente (dataHoraRegistro, registroNumero, tipoRegistro, fkEspecificacaoComponente, fkComponente, fkMaquina, fkFuncionario, fkEmpresa) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                                   LocalDateTime.now(), looca.getGrupoDeProcessos().getTotalProcessos(), "Total de processos", especificacoesDaMaquina.get(2).getIdEspecificacaoComponente(), 3, maquina.getIdMaquina(), login.getIdFuncionario(), maquina.getFkEmpresa());
                            // Temperatura da cpu
-                           con.update("INSERT INTO registrosEspecificacaoComponente (dataHoraRegistro, registroNumero, tipoRegistro, fkEspecificacaoComponentes, fkComponente, fkMaquina, fkFuncionario, fkEmpresa) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                                   LocalDateTime.now(), looca.getTemperatura().getTemperatura(), "Temperatura da cpu", especificacoesDaMaquina.get(2).getIdEspecificacaoComponentes(), 3, maquina.getIdMaquina(), login.getIdFuncionario(), maquina.getFkEmpresa());
+                           con.update("INSERT INTO registroEspecificacaoComponente (dataHoraRegistro, registroNumero, tipoRegistro, fkEspecificacaoComponente, fkComponente, fkMaquina, fkFuncionario, fkEmpresa) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                                   LocalDateTime.now(), looca.getTemperatura().getTemperatura(), "Temperatura da cpu", especificacoesDaMaquina.get(2).getIdEspecificacaoComponente(), 3, maquina.getIdMaquina(), login.getIdFuncionario(), maquina.getFkEmpresa());
 
                            System.out.println("Captura realizada.");
 
@@ -135,8 +135,8 @@ public class TesteOfficeEye {
                    }
                };
 
-               long delay = 30000; // 30 segundos
-               long period = 30000; // 30 segundos
+               long delay = 1000; // 30 segundos
+               long period = 1000; // 30 segundos
 
                timer.scheduleAtFixedRate(task, delay, period);
            }

@@ -6,7 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import java.util.List;
 
 public class EspecificacaoComponente {
-    private Integer idEspecificacaoComponentes;
+    private Integer idEspecificacaoComponente;
     private String nomeEspecificacao;
     private Double informacaoComponente;
     private Integer fkComponente;
@@ -16,8 +16,8 @@ public class EspecificacaoComponente {
 
     public EspecificacaoComponente(){}
 
-    public EspecificacaoComponente(Integer idEspecificacaoComponentes, String nomeEspecificacao, Double informacaoComponente, Integer fkComponente, Integer fkMaquina, Integer fkFuncionario, Integer fkEmpresa) {
-        this.idEspecificacaoComponentes = idEspecificacaoComponentes;
+    public EspecificacaoComponente(Integer idEspecificacaoComponente, String nomeEspecificacao, Double informacaoComponente, Integer fkComponente, Integer fkMaquina, Integer fkFuncionario, Integer fkEmpresa) {
+        this.idEspecificacaoComponente = idEspecificacaoComponente;
         this.nomeEspecificacao = nomeEspecificacao;
         this.informacaoComponente = informacaoComponente;
         this.fkComponente = fkComponente;
@@ -28,18 +28,18 @@ public class EspecificacaoComponente {
 
     public List<EspecificacaoComponente> buscarListaDeEspecificacoesPorMaquina(Integer idMaquina, JdbcTemplate con){
 
-        List<EspecificacaoComponente> especificacoes = con.query((String.format("SELECT * FROM especificacaoComponentes WHERE fkMaquina = '%d'", idMaquina)),
+        List<EspecificacaoComponente> especificacoes = con.query((String.format("SELECT * FROM especificacaoComponente WHERE fkMaquina = '%d'", idMaquina)),
                 new BeanPropertyRowMapper<>(EspecificacaoComponente.class));
         return especificacoes;
     }
 
 
-    public Integer getIdEspecificacaoComponentes() {
-        return idEspecificacaoComponentes;
+    public Integer getIdEspecificacaoComponente() {
+        return idEspecificacaoComponente;
     }
 
-    public void setIdEspecificacaoComponentes(Integer idEspecificacaoComponente) {
-        this.idEspecificacaoComponentes = idEspecificacaoComponente;
+    public void setIdEspecificacaoComponente(Integer idEspecificacaoComponente) {
+        this.idEspecificacaoComponente = idEspecificacaoComponente;
     }
 
     public String getNomeEspecificacao() {
@@ -93,7 +93,7 @@ public class EspecificacaoComponente {
     @Override
     public String toString() {
         return "EspecificacaoComponente{" +
-                "idEspecificacaoComponentes=" + idEspecificacaoComponentes +
+                "idEspecificacaoComponente=" + idEspecificacaoComponente +
                 ", nomeEspecificacao='" + nomeEspecificacao + '\'' +
                 ", informacaoComponente=" + informacaoComponente +
                 ", fkComponente=" + fkComponente +

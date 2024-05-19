@@ -6,7 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 public class Maquina {
     private Integer idMaquina;
     private String modelo;
-    private String fabricante;
+    private String fabricanteSO;
     private String nomeMaquina;
     private String sistemaOperacional;
     private Integer fkFuncionario;
@@ -14,10 +14,10 @@ public class Maquina {
 
     public Maquina(){}
 
-    public Maquina(Integer idMaquina, String modelo, String fabricante, String nomeMaquina, String sistemaOperacional, Integer fkFuncionario, Integer fkEmpresa) {
+    public Maquina(Integer idMaquina, String modelo, String fabricanteSO, String nomeMaquina, String sistemaOperacional, Integer fkFuncionario, Integer fkEmpresa) {
         this.idMaquina = idMaquina;
         this.modelo = modelo;
-        this.fabricante = fabricante;
+        this.fabricanteSO = fabricanteSO;
         this.nomeMaquina = nomeMaquina;
         this.sistemaOperacional = sistemaOperacional;
         this.fkFuncionario = fkFuncionario;
@@ -41,11 +41,11 @@ public class Maquina {
     }
 
     public String getFabricante() {
-        return fabricante;
+        return fabricanteSO;
     }
 
-    public void setFabricante(String fabricante) {
-        this.fabricante = fabricante;
+    public void setFabricante(String fabricanteSO) {
+        this.fabricanteSO = fabricanteSO;
     }
 
     public void setModelo(String modelo) {
@@ -89,7 +89,7 @@ public class Maquina {
         return "Maquina{" +
                 "idMaquina=" + idMaquina +
                 ", modelo='" + modelo + '\'' +
-                ", fabricante='" + fabricante + '\'' +
+                ", fabricanteSO='" + fabricanteSO + '\'' +
                 ", nomeMaquina='" + nomeMaquina + '\'' +
                 ", sistemaOperacional='" + sistemaOperacional + '\'' +
                 ", fkFuncionario=" + fkFuncionario +
