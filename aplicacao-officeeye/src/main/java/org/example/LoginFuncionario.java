@@ -14,10 +14,10 @@ public class LoginFuncionario {
 
     public LoginFuncionario(){}
 
-    public Boolean verificarLogin(String email, String senha, JdbcTemplate con){
+    public Boolean verificarLogin(String email, String senha, JdbcTemplate conSql){
         Boolean existeFuncionario = false;
 
-        List<LoginFuncionario> funcionarios = con.query((String.format("SELECT * FROM funcionario WHERE email = '%s' and senha = '%s'", email, senha)),
+        List<LoginFuncionario> funcionarios = conSql.query((String.format("SELECT * FROM funcionario WHERE email = '%s' and senha = '%s'", email, senha)),
                 new BeanPropertyRowMapper<>(LoginFuncionario.class));
 
         if (!funcionarios.isEmpty()){

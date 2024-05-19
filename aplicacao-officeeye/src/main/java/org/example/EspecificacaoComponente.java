@@ -26,10 +26,11 @@ public class EspecificacaoComponente {
         this.fkEmpresa = fkEmpresa;
     }
 
-    public List<EspecificacaoComponente> buscarListaDeEspecificacoesPorMaquina(Integer idMaquina, JdbcTemplate con){
+    public List<EspecificacaoComponente> buscarListaDeEspecificacoesPorMaquina(Integer idMaquina, JdbcTemplate conSql){
 
-        List<EspecificacaoComponente> especificacoes = con.query((String.format("SELECT * FROM especificacaoComponente WHERE fkMaquina = '%d'", idMaquina)),
+        List<EspecificacaoComponente> especificacoes = conSql.query((String.format("SELECT * FROM especificacaoComponente WHERE fkMaquina = '%d'", idMaquina)),
                 new BeanPropertyRowMapper<>(EspecificacaoComponente.class));
+        System.out.println(especificacoes);
         return especificacoes;
     }
 

@@ -21,7 +21,9 @@ public class TesteOfficeEye {
 
         //conexão com o banco de dados
         Conexao conexao = new Conexao();
+        ConexaoSql conexaoSql = new ConexaoSql();
         JdbcTemplate con = conexao.getConexaoDoBanco();
+        JdbcTemplate conSql = conexaoSql.getConexaoDoBanco();
 
         //instância do looca para coletar dados
         Looca looca = new Looca();
@@ -43,12 +45,14 @@ public class TesteOfficeEye {
         //instância do login de funcionário para que haja a verificação dos dados
         LoginFuncionario login = new LoginFuncionario();
 
-        Boolean verificacaoLogin = login.verificarLogin(email, senha, con);
+        Boolean verificacaoLogin = login.verificarLogin(email, senha, conSql);
 
        if (verificacaoLogin){
 
-           List<Maquina> maquinaFuncionario = con.query((String.format("SELECT * FROM maquina WHERE fkFuncionario = '%d' and fkEmpresa = '%d'", login.getIdFuncionario(), login.getFkEmpresa())),
+           List<Maquina> maquinaFuncionario = conSql.query((String.format("SELECT * FROM maquina WHERE fkFuncionario = '%d' and fkEmpresa = '%d'", login.getIdFuncionario(), login.getFkEmpresa())),
                    new BeanPropertyRowMapper<>(Maquina.class));
+
+
 
            if (maquinaFuncionario.isEmpty()){
                System.out.println(String.format("""
@@ -68,6 +72,10 @@ public class TesteOfficeEye {
                 ----------------------------------------------------------------
                 """, login.getNome()));
 
+
+               System.out.println(maquinaFuncionario.get(0).getNomeMaquina());
+               System.out.println(login.getIdFuncionario());
+
                Integer idMaquina = maquinaFuncionario.get(0).getIdMaquina();
                String modelo  = maquinaFuncionario.get(0).getModelo();
                String fabricante = looca.getSistema().getFabricante();
@@ -83,6 +91,11 @@ public class TesteOfficeEye {
                    con.update("UPDATE maquina SET fabricanteSO = ?,"
                                    + "sistemaOperacional  = ? WHERE idMaquina= ?",
                            maquina.getFabricante(), maquina.getSistemaOperacional(), maquina.getIdMaquina());
+
+
+                   conSql.update("UPDATE maquina SET fabricanteSO = ?,"
+                                   + "sistemaOperacional  = ? WHERE idMaquina= ?",
+                           maquina.getFabricante(), maquina.getSistemaOperacional(), maquina.getIdMaquina());
                }
 
                Integer conversor = 1000000000;
@@ -95,7 +108,15 @@ public class TesteOfficeEye {
                                + "WHERE fkMaquina= ? and idEspecificacaoComponente = 1",
                        tamanhoTotal, maquina.getIdMaquina());
 
+               conSql.update("UPDATE especificacaoComponente SET informacaoTotalEspecificacao = ?"
+                               + "WHERE fkMaquina= ? and idEspecificacaoComponente = 1",
+                       tamanhoTotal, maquina.getIdMaquina());
+
                con.update("UPDATE especificacaoComponente SET informacaoTotalEspecificacao = ?"
+                               + "WHERE fkMaquina= ? and idEspecificacaoComponente = 2 ",
+                       memoriaTotal, maquina.getIdMaquina());
+
+               conSql.update("UPDATE especificacaoComponente SET informacaoTotalEspecificacao = ?"
                                + "WHERE fkMaquina= ? and idEspecificacaoComponente = 2 ",
                        memoriaTotal, maquina.getIdMaquina());
 
@@ -103,8 +124,14 @@ public class TesteOfficeEye {
                                + "WHERE fkMaquina= ? and idEspecificacaoComponente = 3 ",
                        frequenciaProcessador, maquina.getIdMaquina());
 
+               conSql.update("UPDATE especificacaoComponente SET informacaoTotalEspecificacao = ?"
+                               + "WHERE fkMaquina= ? and idEspecificacaoComponente = 3 ",
+                       frequenciaProcessador, maquina.getIdMaquina());
+
                EspecificacaoComponente especificacaoComponente = new EspecificacaoComponente();
-               List<EspecificacaoComponente> especificacoesDaMaquina = especificacaoComponente.buscarListaDeEspecificacoesPorMaquina(maquina.getIdMaquina(), con);
+               List<EspecificacaoComponente> especificacoesDaMaquina = especificacaoComponente.buscarListaDeEspecificacoesPorMaquina(maquina.getIdMaquina(), conSql);
+
+               System.out.println(especificacoesDaMaquina.get(0).getIdEspecificacaoComponente());
 
                //coleta de registros a cada 30 segundos
                TimerTask task = new TimerTask() {
@@ -112,19 +139,41 @@ public class TesteOfficeEye {
                    public void run() {
                        if (verificacaoLogin) {
                            //disco - Espaço disponivel
+                           System.out.println(String.format("INSERT INTO registroEspecificacaoComponente (dataHoraRegistro, registroNumero, tipoRegistro, fkEspecificacaoComponente, fkComponente, fkMaquina, fkFuncionario, fkEmpresa) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)",
+                                   LocalDateTime.now(), looca.getGrupoDeDiscos().getVolumes().get(0).getDisponivel().doubleValue()/conversor, "Espaço disponível", especificacoesDaMaquina.get(0).getIdEspecificacaoComponente(), 1, maquina.getIdMaquina(), login.getIdFuncionario(), maquina.getFkEmpresa()));
                            con.update("INSERT INTO registroEspecificacaoComponente (dataHoraRegistro, registroNumero, tipoRegistro, fkEspecificacaoComponente, fkComponente, fkMaquina, fkFuncionario, fkEmpresa) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                                    LocalDateTime.now(), looca.getGrupoDeDiscos().getVolumes().get(0).getDisponivel().doubleValue()/conversor, "Espaço disponível", especificacoesDaMaquina.get(0).getIdEspecificacaoComponente(), 1, maquina.getIdMaquina(), login.getIdFuncionario(), maquina.getFkEmpresa());
+
+                           conSql.update("INSERT INTO registroEspecificacaoComponente (dataHoraRegistro, registroNumero, tipoRegistro, fkEspecificacaoComponente, fkComponente, fkMaquina, fkFuncionario, fkEmpresa) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                                   LocalDateTime.now(), looca.getGrupoDeDiscos().getVolumes().get(0).getDisponivel().doubleValue()/conversor, "Espaço disponível", especificacoesDaMaquina.get(0).getIdEspecificacaoComponente(), 1, maquina.getIdMaquina(), login.getIdFuncionario(), maquina.getFkEmpresa());
+
+
                            //memoria - Memória em uso
                            con.update("INSERT INTO registroEspecificacaoComponente (dataHoraRegistro, registroNumero, tipoRegistro, fkEspecificacaoComponente, fkComponente, fkMaquina, fkFuncionario, fkEmpresa) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                                   LocalDateTime.now(), looca.getMemoria().getEmUso().doubleValue()/conversor, "Memória em uso", especificacoesDaMaquina.get(1).getIdEspecificacaoComponente(), 2, maquina.getIdMaquina(), login.getIdFuncionario(), maquina.getFkEmpresa());
+
+                           conSql.update("INSERT INTO registroEspecificacaoComponente (dataHoraRegistro, registroNumero, tipoRegistro, fkEspecificacaoComponente, fkComponente, fkMaquina, fkFuncionario, fkEmpresa) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                                    LocalDateTime.now(), looca.getMemoria().getEmUso().doubleValue()/conversor, "Memória em uso", especificacoesDaMaquina.get(1).getIdEspecificacaoComponente(), 2, maquina.getIdMaquina(), login.getIdFuncionario(), maquina.getFkEmpresa());
                            //cpu - Uso do processador
                            con.update("INSERT INTO registroEspecificacaoComponente (dataHoraRegistro, registroNumero, tipoRegistro, fkEspecificacaoComponente, fkComponente, fkMaquina, fkFuncionario, fkEmpresa) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                                    LocalDateTime.now(), looca.getProcessador().getUso().doubleValue()/conversor, "Uso do processador", especificacoesDaMaquina.get(2).getIdEspecificacaoComponente(), 3, maquina.getIdMaquina(), login.getIdFuncionario(), maquina.getFkEmpresa());
+
+
+                           conSql.update("INSERT INTO registroEspecificacaoComponente (dataHoraRegistro, registroNumero, tipoRegistro, fkEspecificacaoComponente, fkComponente, fkMaquina, fkFuncionario, fkEmpresa) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                                   LocalDateTime.now(), looca.getProcessador().getUso().doubleValue()/conversor, "Uso do processador", especificacoesDaMaquina.get(2).getIdEspecificacaoComponente(), 3, maquina.getIdMaquina(), login.getIdFuncionario(), maquina.getFkEmpresa());
                            //Total de processos
                            con.update("INSERT INTO registroEspecificacaoComponente (dataHoraRegistro, registroNumero, tipoRegistro, fkEspecificacaoComponente, fkComponente, fkMaquina, fkFuncionario, fkEmpresa) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                                    LocalDateTime.now(), looca.getGrupoDeProcessos().getTotalProcessos(), "Total de processos", especificacoesDaMaquina.get(2).getIdEspecificacaoComponente(), 3, maquina.getIdMaquina(), login.getIdFuncionario(), maquina.getFkEmpresa());
+
+
+                           conSql.update("INSERT INTO registroEspecificacaoComponente (dataHoraRegistro, registroNumero, tipoRegistro, fkEspecificacaoComponente, fkComponente, fkMaquina, fkFuncionario, fkEmpresa) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                                   LocalDateTime.now(), looca.getGrupoDeProcessos().getTotalProcessos(), "Total de processos", especificacoesDaMaquina.get(2).getIdEspecificacaoComponente(), 3, maquina.getIdMaquina(), login.getIdFuncionario(), maquina.getFkEmpresa());
                            // Temperatura da cpu
                            con.update("INSERT INTO registroEspecificacaoComponente (dataHoraRegistro, registroNumero, tipoRegistro, fkEspecificacaoComponente, fkComponente, fkMaquina, fkFuncionario, fkEmpresa) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                                   LocalDateTime.now(), looca.getTemperatura().getTemperatura(), "Temperatura da cpu", especificacoesDaMaquina.get(2).getIdEspecificacaoComponente(), 3, maquina.getIdMaquina(), login.getIdFuncionario(), maquina.getFkEmpresa());
+
+
+                           conSql.update("INSERT INTO registroEspecificacaoComponente (dataHoraRegistro, registroNumero, tipoRegistro, fkEspecificacaoComponente, fkComponente, fkMaquina, fkFuncionario, fkEmpresa) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                                    LocalDateTime.now(), looca.getTemperatura().getTemperatura(), "Temperatura da cpu", especificacoesDaMaquina.get(2).getIdEspecificacaoComponente(), 3, maquina.getIdMaquina(), login.getIdFuncionario(), maquina.getFkEmpresa());
 
                            System.out.println("Captura realizada.");
