@@ -14,25 +14,6 @@ public class EspecificacaoComponente {
     private Integer fkFuncionario;
     private Integer fkEmpresa;
 
-    public EspecificacaoComponente(){}
-
-    public EspecificacaoComponente(Integer idEspecificacaoComponente, String nomeEspecificacao, Double informacaoComponente, Integer fkComponente, Integer fkMaquina, Integer fkFuncionario, Integer fkEmpresa) {
-        this.idEspecificacaoComponente = idEspecificacaoComponente;
-        this.nomeEspecificacao = nomeEspecificacao;
-        this.informacaoComponente = informacaoComponente;
-        this.fkComponente = fkComponente;
-        this.fkMaquina = fkMaquina;
-        this.fkFuncionario = fkFuncionario;
-        this.fkEmpresa = fkEmpresa;
-    }
-
-    public List<EspecificacaoComponente> buscarListaDeEspecificacoesPorMaquina(Integer idMaquina, JdbcTemplate conSql){
-
-        List<EspecificacaoComponente> especificacoes = conSql.query((String.format("SELECT * FROM especificacaoComponente WHERE fkMaquina = '%d'", idMaquina)),
-                new BeanPropertyRowMapper<>(EspecificacaoComponente.class));
-        System.out.println(especificacoes);
-        return especificacoes;
-    }
 
 
     public Integer getIdEspecificacaoComponente() {

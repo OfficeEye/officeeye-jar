@@ -9,24 +9,21 @@ public class Maquina {
     private String fabricanteSO;
     private String nomeMaquina;
     private String sistemaOperacional;
-    private Integer fkFuncionario;
+    private FuncionarioGeral funcionario;
     private Integer fkEmpresa;
 
     public Maquina(){}
 
-    public Maquina(Integer idMaquina, String modelo, String fabricanteSO, String nomeMaquina, String sistemaOperacional, Integer fkFuncionario, Integer fkEmpresa) {
+    public Maquina(Integer idMaquina, String modelo, String fabricanteSO, String nomeMaquina, String sistemaOperacional, FuncionarioGeral funcionario, Integer fkEmpresa) {
         this.idMaquina = idMaquina;
         this.modelo = modelo;
         this.fabricanteSO = fabricanteSO;
         this.nomeMaquina = nomeMaquina;
         this.sistemaOperacional = sistemaOperacional;
-        this.fkFuncionario = fkFuncionario;
+        this.funcionario = funcionario;
         this.fkEmpresa = fkEmpresa;
     }
 
-    public void atualizarDadosDaMaquina(Integer idMaquina, JdbcTemplate con, Looca looca){
-
-    }
 
     public Integer getIdMaquina() {
         return idMaquina;
@@ -40,16 +37,16 @@ public class Maquina {
         return modelo;
     }
 
-    public String getFabricante() {
+    public void setModelo(String modelo) {
+        this.modelo = modelo;
+    }
+
+    public String getFabricanteSO() {
         return fabricanteSO;
     }
 
-    public void setFabricante(String fabricanteSO) {
+    public void setFabricanteSO(String fabricanteSO) {
         this.fabricanteSO = fabricanteSO;
-    }
-
-    public void setModelo(String modelo) {
-        this.modelo = modelo;
     }
 
     public String getNomeMaquina() {
@@ -68,12 +65,12 @@ public class Maquina {
         this.sistemaOperacional = sistemaOperacional;
     }
 
-    public Integer getFkFuncionario() {
-        return fkFuncionario;
+    public FuncionarioGeral getFuncionario() {
+        return funcionario;
     }
 
-    public void setFkFuncionario(Integer fkFuncionario) {
-        this.fkFuncionario = fkFuncionario;
+    public void setFuncionario(FuncionarioGeral funcionario) {
+        this.funcionario = funcionario;
     }
 
     public Integer getFkEmpresa() {
@@ -92,7 +89,7 @@ public class Maquina {
                 ", fabricanteSO='" + fabricanteSO + '\'' +
                 ", nomeMaquina='" + nomeMaquina + '\'' +
                 ", sistemaOperacional='" + sistemaOperacional + '\'' +
-                ", fkFuncionario=" + fkFuncionario +
+                ", funcionario=" + funcionario +
                 ", fkEmpresa=" + fkEmpresa +
                 '}';
     }
