@@ -60,7 +60,6 @@ public class AreaLoginFuncionarioGeral {
 
         if (maquinaFuncionario.get(0).getSistemaOperacional() == null || maquinaFuncionario.get(0).getFabricanteSO() == null){
             sqlserver.atualizarDadosDaMaquina(maquina);
-            mysql.atualizarDadosDaMaquina(maquina);
         }
 
         Integer conversorGb = 1000000000;
@@ -71,8 +70,6 @@ public class AreaLoginFuncionarioGeral {
 
         List<EspecificacaoComponente> especificacoes = sqlserver.buscarListaDeEspecificacoesPorMaquina(maquina);
         sqlserver.atualizarInformacaoEspecificacaoComponente(especificacoes, memoriaTotal, tamanhoTotal, frequenciaProcessador, maquina);
-        mysql.atualizarInformacaoEspecificacaoComponente(especificacoes, memoriaTotal, tamanhoTotal, frequenciaProcessador, maquina);
-
 
         //coleta de registros a cada 30 segundos
         Timer timer = new Timer();

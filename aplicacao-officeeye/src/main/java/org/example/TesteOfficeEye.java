@@ -1,10 +1,7 @@
 package org.example;
 
 import com.github.britooo.looca.api.core.Looca;
-import org.checkerframework.checker.units.qual.A;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.List;
 
@@ -37,18 +34,21 @@ public class TesteOfficeEye {
                 2- Administrador
                 """));
 
-        Integer tipoLogin = leitorMenu.nextInt();
+        Integer tipoLogin = null;
+        if (leitorMenu.hasNext()) {
+            tipoLogin = leitorMenu.nextInt();
+        }
 
-        if (tipoLogin.equals(1)){
+        if (tipoLogin.equals(1)) {
 
             // Login
             System.out.println(String.format("""
-                ----------------------------------------------------------------
-                                       LOGIN - FUNCIONÁRIO
-                ----------------------------------------------------------------
-                                           
-                Email:
-                """));
+                    ----------------------------------------------------------------
+                                           LOGIN - FUNCIONÁRIO
+                    ----------------------------------------------------------------
+                                               
+                    Email:
+                    """));
             String email = leitorLogin.nextLine();
             System.out.println("Senha:");
             String senha = leitorLogin.nextLine();
@@ -66,11 +66,11 @@ public class TesteOfficeEye {
                 } else {
                     AreaLoginFuncionarioGeral.exibirAreaLogadaFuncionarioGeral(mysql, sqlserver, funcionarioLogado, maquinaFuncionario, looca, verificacaoLogin);
                 }
-            }else{
-                    AreaLoginFuncionarioGeral.mostrarMensagemErroCredenciais();
+            } else {
+                AreaLoginFuncionarioGeral.mostrarMensagemErroCredenciais();
             }
 
-        }else {
+        } else {
             // Login
             System.out.println(String.format("""
                     ----------------------------------------------------------------
@@ -87,7 +87,7 @@ public class TesteOfficeEye {
 
             if (verificacaoLoginAdm) {
                 AreaLoginFuncionarioAdm.exibirAreaLogadaFuncionarioAdm(sqlserver);
-            }else{
+            } else {
                 AreaLoginFuncionarioAdm.mostrarMensagemErroCredenciais();
             }
         }

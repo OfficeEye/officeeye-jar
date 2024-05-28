@@ -97,7 +97,7 @@ public class BdSqlServer {
         conSql.update("UPDATE funcionario SET statusLogin = ? WHERE idFuncionario = ?",
                 "Deslogado", funcionario.getIdFuncionario());
 
-        funcionario.setStatusLogin("Logado");
+        funcionario.setStatusLogin("Deslogado");
     }
 
 
