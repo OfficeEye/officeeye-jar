@@ -34,12 +34,9 @@ public class TesteOfficeEye {
                 2- Administrador
                 """));
 
-        Integer tipoLogin = null;
-        if (leitorMenu.hasNext()) {
-            tipoLogin = leitorMenu.nextInt();
-        }
+        Integer tipoLogin = leitorMenu.nextInt();
 
-        if (tipoLogin.equals(1)) {
+        if (tipoLogin.equals(1) && tipoLogin != null) {
 
             // Login
             System.out.println(String.format("""
