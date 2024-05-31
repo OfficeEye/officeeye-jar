@@ -117,6 +117,14 @@ public class BdSqlServer {
     }
 
 
+    public List<MetricaComponente> buscarListaDeMetricas(Maquina maquina){
+
+        List<MetricaComponente> metricas = conSql.query((String.format("SELECT * FROM metricaComponente WHERE fkMaquina = '%d'", maquina.getIdMaquina())),
+                new BeanPropertyRowMapper<>(MetricaComponente.class));
+        return metricas;
+    }
+
+
     public void atualizarDadosDaMaquina(Maquina maquina){
 
         conSql.update("UPDATE maquina SET fabricanteSO = ?,"
@@ -141,23 +149,23 @@ public class BdSqlServer {
     }
 
 
-    public void registrarEspacoDisponivelEmDisco(LocalDateTime dataHora, Double espacoDisponivel, String tipoRegistro, Integer fkEspecificacaoComponenteDisco, Integer fkComponenteDisco, Integer fkMaquina, Integer fkFuncionario, Integer fkEmpresa){
+    public void registrarEspacoDisponivelEmDisco(LocalDateTime dataHora, Double espacoDisponivel, String tipoRegistro, Integer fkEspecificacaoComponenteDisco, Integer fkComponenteDisco, Integer fkMaquina, Integer fkFuncionario, Integer fkEmpresa, String status){
 
-        conSql.update("INSERT INTO registroEspecificacaoComponente (dataHoraRegistro, registroNumero, tipoRegistro, fkEspecificacaoComponente, fkComponente, fkMaquina, fkFuncionario, fkEmpresa) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                dataHora, espacoDisponivel, tipoRegistro, fkEspecificacaoComponenteDisco, fkComponenteDisco, fkMaquina, fkFuncionario, fkEmpresa);
+        conSql.update("INSERT INTO registroEspecificacaoComponente (dataHoraRegistro, registroNumero, tipoRegistro, fkEspecificacaoComponente, fkComponente, fkMaquina, fkFuncionario, fkEmpresa, statusRegistro) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                dataHora, espacoDisponivel, tipoRegistro, fkEspecificacaoComponenteDisco, fkComponenteDisco, fkMaquina, fkFuncionario, fkEmpresa, status);
     }
 
 
-    public void registrarMemoriaEmUso(LocalDateTime dataHora, Double espacoDisponivel, String tipoRegistro, Integer fkEspecificacaoComponenteMemoria, Integer fkComponenteMemoria, Integer fkMaquina, Integer fkFuncionario, Integer fkEmpresa){
+    public void registrarMemoriaEmUso(LocalDateTime dataHora, Double espacoDisponivel, String tipoRegistro, Integer fkEspecificacaoComponenteMemoria, Integer fkComponenteMemoria, Integer fkMaquina, Integer fkFuncionario, Integer fkEmpresa, String status){
 
-        conSql.update("INSERT INTO registroEspecificacaoComponente (dataHoraRegistro, registroNumero, tipoRegistro, fkEspecificacaoComponente, fkComponente, fkMaquina, fkFuncionario, fkEmpresa) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                dataHora, espacoDisponivel, tipoRegistro, fkEspecificacaoComponenteMemoria, fkComponenteMemoria, fkMaquina, fkFuncionario, fkEmpresa);
+        conSql.update("INSERT INTO registroEspecificacaoComponente (dataHoraRegistro, registroNumero, tipoRegistro, fkEspecificacaoComponente, fkComponente, fkMaquina, fkFuncionario, fkEmpresa, statusRegistro) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                dataHora, espacoDisponivel, tipoRegistro, fkEspecificacaoComponenteMemoria, fkComponenteMemoria, fkMaquina, fkFuncionario, fkEmpresa, status);
     }
 
-    public void registrarUsoProcessador(LocalDateTime dataHora, Double usoProcessador, String tipoRegistro, Integer fkEspecificacaoComponenteProcessador, Integer fkComponenteProcessador, Integer fkMaquina, Integer fkFuncionario, Integer fkEmpresa){
+    public void registrarUsoProcessador(LocalDateTime dataHora, Double usoProcessador, String tipoRegistro, Integer fkEspecificacaoComponenteProcessador, Integer fkComponenteProcessador, Integer fkMaquina, Integer fkFuncionario, Integer fkEmpresa, String status){
 
-        conSql.update("INSERT INTO registroEspecificacaoComponente (dataHoraRegistro, registroNumero, tipoRegistro, fkEspecificacaoComponente, fkComponente, fkMaquina, fkFuncionario, fkEmpresa) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                dataHora, usoProcessador, tipoRegistro, fkEspecificacaoComponenteProcessador, fkComponenteProcessador, fkMaquina, fkFuncionario, fkEmpresa);
+        conSql.update("INSERT INTO registroEspecificacaoComponente (dataHoraRegistro, registroNumero, tipoRegistro, fkEspecificacaoComponente, fkComponente, fkMaquina, fkFuncionario, fkEmpresa, statusRegistro) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                dataHora, usoProcessador, tipoRegistro, fkEspecificacaoComponenteProcessador, fkComponenteProcessador, fkMaquina, fkFuncionario, fkEmpresa, status);
     }
 
     public void registrarTotalProcessos(LocalDateTime dataHora, Double totalProcessos, String tipoRegistroQtdeProcessos, Integer fkEspecificacaoComponenteProcessador, Integer fkComponenteProcessador, Integer fkMaquina, Integer fkFuncionario, Integer fkEmpresa){
@@ -166,9 +174,9 @@ public class BdSqlServer {
                 dataHora, totalProcessos, tipoRegistroQtdeProcessos, fkEspecificacaoComponenteProcessador, fkComponenteProcessador, fkMaquina, fkFuncionario, fkEmpresa);
     }
 
-    public void registrarTemperaturaCpu(LocalDateTime dataHora, Double temperatura, String tipoRegistroTemperaturaCpu, Integer fkEspecificacaoComponenteProcessador, Integer fkComponenteProcessador, Integer fkMaquina, Integer fkFuncionario, Integer fkEmpresa){
+    public void registrarTemperaturaCpu(LocalDateTime dataHora, Double temperatura, String tipoRegistroTemperaturaCpu, Integer fkEspecificacaoComponenteProcessador, Integer fkComponenteProcessador, Integer fkMaquina, Integer fkFuncionario, Integer fkEmpresa, String status){
 
-        conSql.update("INSERT INTO registroEspecificacaoComponente (dataHoraRegistro, registroNumero, tipoRegistro, fkEspecificacaoComponente, fkComponente, fkMaquina, fkFuncionario, fkEmpresa) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                dataHora, temperatura, tipoRegistroTemperaturaCpu, fkEspecificacaoComponenteProcessador, fkComponenteProcessador, fkMaquina, fkFuncionario, fkEmpresa);
+        conSql.update("INSERT INTO registroEspecificacaoComponente (dataHoraRegistro, registroNumero, tipoRegistro, fkEspecificacaoComponente, fkComponente, fkMaquina, fkFuncionario, fkEmpresa, statusRegistro) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                dataHora, temperatura, tipoRegistroTemperaturaCpu, fkEspecificacaoComponenteProcessador, fkComponenteProcessador, fkMaquina, fkFuncionario, fkEmpresa, status);
     }
 }

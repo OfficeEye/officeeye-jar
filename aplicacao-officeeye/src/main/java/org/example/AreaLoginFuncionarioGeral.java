@@ -71,6 +71,20 @@ public class AreaLoginFuncionarioGeral {
         List<EspecificacaoComponente> especificacoes = sqlserver.buscarListaDeEspecificacoesPorMaquina(maquina);
         sqlserver.atualizarInformacaoEspecificacaoComponente(especificacoes, memoriaTotal, tamanhoTotal, frequenciaProcessador, maquina);
 
+        List<MetricaComponente> metricas = sqlserver.buscarListaDeMetricas(maquina);
+
+        System.out.println(String.format("""
+                        DADOS INICIAIS
+                        
+                        Id da máquina: %d
+                        Sistema operacional: %s
+                        
+                        Tamanho do disco: %.2f GB
+                        Memória total: %.2f GB
+                        Frequência da CPU: %.2f GHz
+                        identificador da CPU: %s
+                        """, maquina.getIdMaquina(), maquina.getSistemaOperacional(), tamanhoTotal, memoriaTotal,frequenciaProcessador, looca.getProcessador().getIdentificador()));
+
         //coleta de registros a cada 30 segundos
         Timer timer = new Timer();
         TimerTask task = new TimerTask() {
@@ -89,11 +103,33 @@ public class AreaLoginFuncionarioGeral {
                     Integer fkEspecificacaoComponenteDisco = especificacoes.get(0).getIdEspecificacaoComponente();
                     Integer fkComponenteDisco = especificacoes.get(0).getFkComponente();
 
+                    String statusRegistroEspacoLivre = "";
+                    Double porcentagemEspacoLivre = (double) Math.round((espacoDisponivel / tamanhoTotal) * 100);
+
+                    if (porcentagemEspacoLivre <= metricas.get(0).getPorcentagemCritico()){
+                        statusRegistroEspacoLivre = "Crítico";
+                    }else if (porcentagemEspacoLivre <= metricas.get(0).getPorcentagemAlerta() && porcentagemEspacoLivre > metricas.get(0).getPorcentagemCritico()){
+                        statusRegistroEspacoLivre = "Alerta";
+                    }else{
+                        statusRegistroEspacoLivre = "Ideal";
+                    }
+
                     // memória
                     Double memoriaEmUso = looca.getMemoria().getEmUso().doubleValue()/conversorGb;
                     String tipoRegistroMemoria = "Memória em uso";
                     Integer fkEspecificacaoComponenteMemoria = especificacoes.get(1).getIdEspecificacaoComponente();
                     Integer fkComponenteMemoria = especificacoes.get(1).getFkComponente();
+
+                    String statusRegistroMemoriaUso = "";
+                    Double porcentagemUsoMemoria = (double) Math.round((memoriaEmUso / memoriaTotal) * 100);
+
+                    if (porcentagemUsoMemoria <= metricas.get(1).getPorcentagemIdeal()){
+                       statusRegistroMemoriaUso = "Ideal";
+                    }else if (porcentagemUsoMemoria < metricas.get(1).getPorcentagemCritico() && porcentagemUsoMemoria > metricas.get(0).getPorcentagemIdeal()){
+                       statusRegistroMemoriaUso = "Alerta";
+                    }else{
+                       statusRegistroMemoriaUso = "Crítico";
+                    }
 
                     //processador
                     Double usoProcessador = looca.getProcessador().getUso().doubleValue()/conversorGb;
@@ -105,13 +141,34 @@ public class AreaLoginFuncionarioGeral {
                     Integer fkEspecificacaoComponenteProcessador = especificacoes.get(2).getIdEspecificacaoComponente();
                     Integer fkComponenteProcessador = especificacoes.get(2).getFkComponente();
 
+                    String statusRegistroUsoProcessador = "";
+                    String statusRegistroTemperaturaCpu = "";
+
+                    if (usoProcessador >= metricas.get(2).getPorcentagemIdeal() && usoProcessador < metricas.get(2).getPorcentagemAlerta()) {
+                        statusRegistroUsoProcessador = "Ideal";
+                    } else if (usoProcessador < metricas.get(2).getPorcentagemIdeal()){
+                        statusRegistroUsoProcessador = "Alerta";
+                    }else if (usoProcessador >= metricas.get(2).getPorcentagemAlerta() && usoProcessador < metricas.get(2).getPorcentagemCritico()){
+                        statusRegistroUsoProcessador = "Alerta";
+                    }else{
+                        statusRegistroUsoProcessador = "Crítico";
+                    }
+
+                    if (temperaturaCpu <= metricas.get(3).getPorcentagemIdeal()){
+                        statusRegistroTemperaturaCpu = "Ideal";
+                    }else if (temperaturaCpu >= metricas.get(3).getPorcentagemAlerta() && temperaturaCpu < metricas.get(3).getPorcentagemCritico()){
+                        statusRegistroTemperaturaCpu = "Alerta";
+                    }else{
+                        statusRegistroTemperaturaCpu = "Crítico";
+                    }
+
 
                     //inserts
-                    sqlserver.registrarEspacoDisponivelEmDisco(dataHoraRegistro, espacoDisponivel, tipoRegistroDisco, fkEspecificacaoComponenteDisco, fkComponenteDisco, fkMaquina, fkFuncionario, fkEmpresa);
-                    sqlserver.registrarMemoriaEmUso(dataHoraRegistro, memoriaEmUso, tipoRegistroMemoria, fkEspecificacaoComponenteMemoria, fkComponenteMemoria, fkMaquina, fkFuncionario, fkEmpresa);
-                    sqlserver.registrarUsoProcessador(dataHoraRegistro, usoProcessador, tipoRegistroUsoProcessador, fkEspecificacaoComponenteProcessador, fkComponenteProcessador, fkMaquina, fkFuncionario, fkEmpresa);
+                    sqlserver.registrarEspacoDisponivelEmDisco(dataHoraRegistro, espacoDisponivel, tipoRegistroDisco, fkEspecificacaoComponenteDisco, fkComponenteDisco, fkMaquina, fkFuncionario, fkEmpresa, statusRegistroEspacoLivre);
+                    sqlserver.registrarMemoriaEmUso(dataHoraRegistro, memoriaEmUso, tipoRegistroMemoria, fkEspecificacaoComponenteMemoria, fkComponenteMemoria, fkMaquina, fkFuncionario, fkEmpresa, statusRegistroMemoriaUso);
+                    sqlserver.registrarUsoProcessador(dataHoraRegistro, usoProcessador, tipoRegistroUsoProcessador, fkEspecificacaoComponenteProcessador, fkComponenteProcessador, fkMaquina, fkFuncionario, fkEmpresa, statusRegistroUsoProcessador);
                     sqlserver.registrarTotalProcessos(dataHoraRegistro, totalProcessos.doubleValue(), tipoRegistroQtdeProcessos, fkEspecificacaoComponenteProcessador, fkComponenteProcessador, fkMaquina, fkFuncionario, fkEmpresa);
-                    sqlserver.registrarTemperaturaCpu(dataHoraRegistro, temperaturaCpu, tipoRegistroTemperatura, fkEspecificacaoComponenteProcessador, fkComponenteProcessador, fkMaquina, fkFuncionario, fkEmpresa);
+                    sqlserver.registrarTemperaturaCpu(dataHoraRegistro, temperaturaCpu, tipoRegistroTemperatura, fkEspecificacaoComponenteProcessador, fkComponenteProcessador, fkMaquina, fkFuncionario, fkEmpresa, statusRegistroTemperaturaCpu);
 
                     mysql.registrarEspacoDisponivelEmDisco(dataHoraRegistro, espacoDisponivel, tipoRegistroDisco, fkEspecificacaoComponenteDisco, fkComponenteDisco, fkMaquina, fkFuncionario, fkEmpresa);
                     mysql.registrarMemoriaEmUso(dataHoraRegistro, memoriaEmUso, tipoRegistroMemoria, fkEspecificacaoComponenteMemoria, fkComponenteMemoria, fkMaquina, fkFuncionario, fkEmpresa);
