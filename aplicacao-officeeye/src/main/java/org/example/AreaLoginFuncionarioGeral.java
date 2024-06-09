@@ -93,6 +93,7 @@ public class AreaLoginFuncionarioGeral {
                     Integer fkMaquina = maquina.getIdMaquina();
                     Integer fkFuncionario = funcionarioLogado.getIdFuncionario();
                     Integer fkEmpresa = maquina.getFkEmpresa();
+                    String hostname = looca.getRede().getParametros().getHostName();
 
                     //disco
                     Double espacoDisponivel = looca.getGrupoDeDiscos().getVolumes().get(0).getDisponivel().doubleValue() / conversorGb;
@@ -105,10 +106,10 @@ public class AreaLoginFuncionarioGeral {
 
                     if (porcentagemEspacoLivre <= metricas.get(0).getPorcentagemCritico()) {
                         statusRegistroEspacoLivre = "Crítico";
-                        enviarMensagemSlack("Alerta crítico: Espaço em disco abaixo de " + metricas.get(0).getPorcentagemCritico() + "%.");
+                        enviarMensagemSlack("Alerta crítico 🚨 : " + hostname + " com espaço em disco abaixo de " + metricas.get(0).getPorcentagemCritico() + "%.");
                     } else if (porcentagemEspacoLivre <= metricas.get(0).getPorcentagemAlerta()) {
                         statusRegistroEspacoLivre = "Alerta";
-                        enviarMensagemSlack("Alerta: Espaço em disco abaixo de " + metricas.get(0).getPorcentagemAlerta() + "%.");
+                        enviarMensagemSlack("Alerta ❗ : " + hostname + " com espaço em disco abaixo de " + metricas.get(0).getPorcentagemAlerta() + "%.");
                     } else {
                         statusRegistroEspacoLivre = "Ideal";
                     }
@@ -124,10 +125,10 @@ public class AreaLoginFuncionarioGeral {
 
                     if (porcentagemUsoMemoria >= metricas.get(1).getPorcentagemCritico()) {
                         statusRegistroMemoriaUso = "Crítico";
-                        enviarMensagemSlack("Alerta crítico: Uso de memória acima de " + metricas.get(1).getPorcentagemCritico() + "%.");
+                        enviarMensagemSlack("Alerta crítico 🚨 : " + hostname + " com uso de memória acima de " + metricas.get(1).getPorcentagemCritico() + "%.");
                     } else if (porcentagemUsoMemoria >= metricas.get(1).getPorcentagemAlerta()) {
                         statusRegistroMemoriaUso = "Alerta";
-                        enviarMensagemSlack("Alerta: Uso de memória acima de " + metricas.get(1).getPorcentagemAlerta() + "%.");
+                        enviarMensagemSlack("Alerta ❗ : " + hostname + " com uso de memória acima de " + metricas.get(1).getPorcentagemAlerta() + "%.");
                     } else {
                         statusRegistroMemoriaUso = "Ideal";
                     }
@@ -147,20 +148,20 @@ public class AreaLoginFuncionarioGeral {
 
                     if (usoProcessador >= metricas.get(2).getPorcentagemCritico()) {
                         statusRegistroUsoProcessador = "Crítico";
-                        enviarMensagemSlack("Alerta crítico: Uso de processador acima de " + metricas.get(2).getPorcentagemCritico() + "%.");
+                        enviarMensagemSlack("Alerta crítico 🚨 : " + hostname + " com uso de processador acima de " + metricas.get(2).getPorcentagemCritico() + "%.");
                     } else if (usoProcessador >= metricas.get(2).getPorcentagemAlerta()) {
                         statusRegistroUsoProcessador = "Alerta";
-                        enviarMensagemSlack("Alerta: Uso de processador acima de " + metricas.get(2).getPorcentagemAlerta() + "%.");
+                        enviarMensagemSlack("Alerta ❗ : " + hostname + " com uso de processador acima de " + metricas.get(2).getPorcentagemAlerta() + "%.");
                     } else {
                         statusRegistroUsoProcessador = "Ideal";
                     }
 
                     if (temperaturaCpu >= metricas.get(3).getPorcentagemCritico()) {
                         statusRegistroTemperaturaCpu = "Crítico";
-                        enviarMensagemSlack("Alerta crítico: Temperatura da CPU acima de " + metricas.get(3).getPorcentagemCritico() + "°C.");
+                        enviarMensagemSlack("Alerta crítico 🚨 : " + hostname + " com temperatura da CPU acima de " + metricas.get(3).getPorcentagemCritico() + "°C.");
                     } else if (temperaturaCpu >= metricas.get(3).getPorcentagemAlerta()) {
                         statusRegistroTemperaturaCpu = "Alerta";
-                        enviarMensagemSlack("Alerta: Temperatura da CPU acima de " + metricas.get(3).getPorcentagemAlerta() + "°C.");
+                        enviarMensagemSlack("Alerta ❗ : " + hostname + " com temperatura da CPU acima de " + metricas.get(3).getPorcentagemAlerta() + "°C.");
                     } else {
                         statusRegistroTemperaturaCpu = "Ideal";
                     }
