@@ -11,7 +11,7 @@ public class Conexao {
         dataSource.setDriverClassName("com.mysql.cj.jdbc.Driver");
         dataSource.setUrl("jdbc:mysql://localhost:3306/officeEye");
         dataSource.setUsername("root");
-        dataSource.setPassword("msql26081914");
+        dataSource.setPassword("officeeye");
 
         conexaoDoBanco = new JdbcTemplate(dataSource);
     }
