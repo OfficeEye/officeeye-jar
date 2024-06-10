@@ -7,58 +7,55 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import org.json.JSONObject;
 
 public class AreaLoginFuncionarioGeral {
 
-
-    public static void mostrarMensagemErroMaquina(){
+    public static void mostrarMensagemErroMaquina() {
         System.out.println(String.format("""
-                            ----------------------------------------------------------------
-                                           ERRO AO BUSCAR DADOS DE MÁQUINA!
-                            ----------------------------------------------------------------
-                            Parece que não há nenhum computador vínculado a você. 
-                            Entre em contato com o suporte de sua empresa para verificar
-                            o problema.
-                            """));
-
+                ----------------------------------------------------------------
+                               ERRO AO BUSCAR DADOS DE MÁQUINA!
+                ----------------------------------------------------------------
+                Parece que não há nenhum computador vínculado a você. 
+                Entre em contato com o suporte de sua empresa para verificar
+                o problema.
+                """));
         System.exit(0);
     }
 
-    public static void mostrarMensagemErroCredenciais(){
+    public static void mostrarMensagemErroCredenciais() {
         System.out.println(String.format("""
-                        ----------------------------------------------------------------
-                                                 ERRO AO LOGAR!
-                        ----------------------------------------------------------------
-                        Login inexistente. Verifique o email e senha novamente ou 
-                        entre em contato com o suporte técnico da sua empresa.
-                                       
-                        """));
+                ----------------------------------------------------------------
+                                     ERRO AO LOGAR!
+                ----------------------------------------------------------------
+                Login inexistente. Verifique o email e senha novamente ou 
+                entre em contato com o suporte técnico da sua empresa.
+                """));
         System.exit(0);
     }
 
-    public static void exibirAreaLogadaFuncionarioGeral(BdMySql mysql, BdSqlServer sqlserver, FuncionarioGeral funcionarioLogado, List<Maquina> maquinaFuncionario, Looca looca, Boolean verificacaoLogin){
+    public static void exibirAreaLogadaFuncionarioGeral(BdMySql mysql, BdSqlServer sqlserver, FuncionarioGeral funcionarioLogado, List<Maquina> maquinaFuncionario, Looca looca, boolean verificacaoLogin) {
 
-        System.out.println(String.format("""
+        System.out.println(String.format( """
                 \n
                 ----------------------------------------------------------------
                    Olá, %s! O monitoramento de sua máquina irá começar...
                 ----------------------------------------------------------------
                 * Aperte a tecla ENTER para parar o monitoramento e deslogar.
-                """, funcionarioLogado.getNome()));
+                """.formatted(funcionarioLogado.getNome())));
 
         sqlserver.atualizarStatusLogin(funcionarioLogado);
 
         Integer idMaquina = maquinaFuncionario.get(0).getIdMaquina();
-        String modelo  = maquinaFuncionario.get(0).getModelo();
+        String modelo = maquinaFuncionario.get(0).getModelo();
         String fabricante = looca.getSistema().getFabricante();
         String nomeMaquina = maquinaFuncionario.get(0).getNomeMaquina();
         String sistemaOperacional = looca.getSistema().getSistemaOperacional();
-        FuncionarioGeral funcionario = funcionarioLogado;
         Integer fkEmpresa = maquinaFuncionario.get(0).getFkEmpresa();
 
-        Maquina maquina = new Maquina(idMaquina, modelo, fabricante, nomeMaquina, sistemaOperacional, funcionario, fkEmpresa);
+        Maquina maquina = new Maquina(idMaquina, modelo, fabricante, nomeMaquina, sistemaOperacional, funcionarioLogado, fkEmpresa);
 
-        if (maquinaFuncionario.get(0).getSistemaOperacional() == null || maquinaFuncionario.get(0).getFabricanteSO() == null){
+        if (maquinaFuncionario.get(0).getSistemaOperacional() == null || maquinaFuncionario.get(0).getFabricanteSO() == null) {
             sqlserver.atualizarDadosDaMaquina(maquina);
         }
 
@@ -74,16 +71,16 @@ public class AreaLoginFuncionarioGeral {
         List<MetricaComponente> metricas = sqlserver.buscarListaDeMetricas(maquina);
 
         System.out.println(String.format("""
-                        DADOS INICIAIS
-                        
-                        Id da máquina: %d
-                        Sistema operacional: %s
-                        
-                        Tamanho do disco: %.2f GB
-                        Memória total: %.2f GB
-                        Frequência da CPU: %.2f GHz
-                        identificador da CPU: %s
-                        """, maquina.getIdMaquina(), maquina.getSistemaOperacional(), tamanhoTotal, memoriaTotal,frequenciaProcessador, looca.getProcessador().getIdentificador()));
+                DADOS INICIAIS
+
+                Id da máquina: %d
+                Sistema operacional: %s
+
+                Tamanho do disco: %.2f GB
+                Memória total: %.2f GB
+                Frequência da CPU: %.2f GHz
+                identificador da CPU: %s
+                """.formatted(maquina.getIdMaquina(), maquina.getSistemaOperacional(), tamanhoTotal, memoriaTotal, frequenciaProcessador, looca.getProcessador().getIdentificador())));
 
         //coleta de registros a cada 30 segundos
         Timer timer = new Timer();
@@ -96,9 +93,10 @@ public class AreaLoginFuncionarioGeral {
                     Integer fkMaquina = maquina.getIdMaquina();
                     Integer fkFuncionario = funcionarioLogado.getIdFuncionario();
                     Integer fkEmpresa = maquina.getFkEmpresa();
+                    String hostname = looca.getRede().getParametros().getHostName();
 
                     //disco
-                    Double espacoDisponivel = looca.getGrupoDeDiscos().getVolumes().get(0).getDisponivel().doubleValue()/conversorGb;
+                    Double espacoDisponivel = looca.getGrupoDeDiscos().getVolumes().get(0).getDisponivel().doubleValue() / conversorGb;
                     String tipoRegistroDisco = "Espaço disponível";
                     Integer fkEspecificacaoComponenteDisco = especificacoes.get(0).getIdEspecificacaoComponente();
                     Integer fkComponenteDisco = especificacoes.get(0).getFkComponente();
@@ -106,16 +104,18 @@ public class AreaLoginFuncionarioGeral {
                     String statusRegistroEspacoLivre = "";
                     Double porcentagemEspacoLivre = (double) Math.round((espacoDisponivel / tamanhoTotal) * 100);
 
-                    if (porcentagemEspacoLivre <= metricas.get(0).getPorcentagemCritico()){
+                    if (porcentagemEspacoLivre <= metricas.get(0).getPorcentagemCritico()) {
                         statusRegistroEspacoLivre = "Crítico";
-                    }else if (porcentagemEspacoLivre <= metricas.get(0).getPorcentagemAlerta() && porcentagemEspacoLivre > metricas.get(0).getPorcentagemCritico()){
+                        enviarMensagemSlack("Alerta crítico 🚨: " + hostname + " com espaço em disco abaixo de " + metricas.get(0).getPorcentagemCritico() + "%.");
+                    } else if (porcentagemEspacoLivre <= metricas.get(0).getPorcentagemAlerta()) {
                         statusRegistroEspacoLivre = "Alerta";
-                    }else{
+                        enviarMensagemSlack("Alerta: " + hostname + " com espaço em disco abaixo de " + metricas.get(0).getPorcentagemAlerta() + "%.");
+                    } else {
                         statusRegistroEspacoLivre = "Ideal";
                     }
 
                     // memória
-                    Double memoriaEmUso = looca.getMemoria().getEmUso().doubleValue()/conversorGb;
+                    Double memoriaEmUso = looca.getMemoria().getEmUso().doubleValue() / conversorGb;
                     String tipoRegistroMemoria = "Memória em uso";
                     Integer fkEspecificacaoComponenteMemoria = especificacoes.get(1).getIdEspecificacaoComponente();
                     Integer fkComponenteMemoria = especificacoes.get(1).getFkComponente();
@@ -123,16 +123,18 @@ public class AreaLoginFuncionarioGeral {
                     String statusRegistroMemoriaUso = "";
                     Double porcentagemUsoMemoria = (double) Math.round((memoriaEmUso / memoriaTotal) * 100);
 
-                    if (porcentagemUsoMemoria <= metricas.get(1).getPorcentagemIdeal()){
-                       statusRegistroMemoriaUso = "Ideal";
-                    }else if (porcentagemUsoMemoria < metricas.get(1).getPorcentagemCritico() && porcentagemUsoMemoria > metricas.get(0).getPorcentagemIdeal()){
-                       statusRegistroMemoriaUso = "Alerta";
-                    }else{
-                       statusRegistroMemoriaUso = "Crítico";
+                    if (porcentagemUsoMemoria >= metricas.get(1).getPorcentagemCritico()) {
+                        statusRegistroMemoriaUso = "Crítico";
+                        enviarMensagemSlack("Alerta crítico 🚨: " + hostname + " com uso de memória acima de " + metricas.get(1).getPorcentagemCritico() + "%.");
+                    } else if (porcentagemUsoMemoria >= metricas.get(1).getPorcentagemAlerta()) {
+                        statusRegistroMemoriaUso = "Alerta";
+                        enviarMensagemSlack("Alerta: " + hostname + " com uso de memória acima de " + metricas.get(1).getPorcentagemAlerta() + "%.");
+                    } else {
+                        statusRegistroMemoriaUso = "Ideal";
                     }
 
                     //processador
-                    Double usoProcessador = looca.getProcessador().getUso().doubleValue()/conversorGb;
+                    Double usoProcessador = looca.getProcessador().getUso().doubleValue();
                     Integer totalProcessos = looca.getGrupoDeProcessos().getTotalProcessos();
                     Double temperaturaCpu = looca.getTemperatura().getTemperatura();
                     String tipoRegistroUsoProcessador = "Uso do processador";
@@ -144,22 +146,24 @@ public class AreaLoginFuncionarioGeral {
                     String statusRegistroUsoProcessador = "";
                     String statusRegistroTemperaturaCpu = "";
 
-                    if (usoProcessador >= metricas.get(2).getPorcentagemIdeal() && usoProcessador < metricas.get(2).getPorcentagemAlerta()) {
-                        statusRegistroUsoProcessador = "Ideal";
-                    } else if (usoProcessador < metricas.get(2).getPorcentagemIdeal()){
-                        statusRegistroUsoProcessador = "Alerta";
-                    }else if (usoProcessador >= metricas.get(2).getPorcentagemAlerta() && usoProcessador < metricas.get(2).getPorcentagemCritico()){
-                        statusRegistroUsoProcessador = "Alerta";
-                    }else{
+                    if (usoProcessador >= metricas.get(2).getPorcentagemCritico()) {
                         statusRegistroUsoProcessador = "Crítico";
+                        enviarMensagemSlack("Alerta crítico 🚨: " + hostname + " com uso de processador acima de " + metricas.get(2).getPorcentagemCritico() + "%.");
+                    } else if (usoProcessador >= metricas.get(2).getPorcentagemAlerta()) {
+                        statusRegistroUsoProcessador = "Alerta";
+                        enviarMensagemSlack("Alerta: " + hostname + " com uso de processador acima de " + metricas.get(2).getPorcentagemAlerta() + "%.");
+                    } else {
+                        statusRegistroUsoProcessador = "Ideal";
                     }
 
-                    if (temperaturaCpu <= metricas.get(3).getPorcentagemIdeal()){
-                        statusRegistroTemperaturaCpu = "Ideal";
-                    }else if (temperaturaCpu >= metricas.get(3).getPorcentagemAlerta() && temperaturaCpu < metricas.get(3).getPorcentagemCritico()){
-                        statusRegistroTemperaturaCpu = "Alerta";
-                    }else{
+                    if (temperaturaCpu >= metricas.get(3).getPorcentagemCritico()) {
                         statusRegistroTemperaturaCpu = "Crítico";
+                        enviarMensagemSlack("Alerta crítico 🚨: " + hostname + " com temperatura da CPU acima de " + metricas.get(3).getPorcentagemCritico() + "°C.");
+                    } else if (temperaturaCpu >= metricas.get(3).getPorcentagemAlerta()) {
+                        statusRegistroTemperaturaCpu = "Alerta";
+                        enviarMensagemSlack("Alerta: " + hostname + " com temperatura da CPU acima de " + metricas.get(3).getPorcentagemAlerta() + "°C.");
+                    } else {
+                        statusRegistroTemperaturaCpu = "Ideal";
                     }
 
 
@@ -167,39 +171,48 @@ public class AreaLoginFuncionarioGeral {
                     sqlserver.registrarEspacoDisponivelEmDisco(dataHoraRegistro, espacoDisponivel, tipoRegistroDisco, fkEspecificacaoComponenteDisco, fkComponenteDisco, fkMaquina, fkFuncionario, fkEmpresa, statusRegistroEspacoLivre);
                     sqlserver.registrarMemoriaEmUso(dataHoraRegistro, memoriaEmUso, tipoRegistroMemoria, fkEspecificacaoComponenteMemoria, fkComponenteMemoria, fkMaquina, fkFuncionario, fkEmpresa, statusRegistroMemoriaUso);
                     sqlserver.registrarUsoProcessador(dataHoraRegistro, usoProcessador, tipoRegistroUsoProcessador, fkEspecificacaoComponenteProcessador, fkComponenteProcessador, fkMaquina, fkFuncionario, fkEmpresa, statusRegistroUsoProcessador);
-                    sqlserver.registrarTotalProcessos(dataHoraRegistro, totalProcessos.doubleValue(), tipoRegistroQtdeProcessos, fkEspecificacaoComponenteProcessador, fkComponenteProcessador, fkMaquina, fkFuncionario, fkEmpresa);
+                    sqlserver.registrarTotalProcessos(dataHoraRegistro, (double) totalProcessos, tipoRegistroQtdeProcessos, fkEspecificacaoComponenteProcessador, fkComponenteProcessador, fkMaquina, fkFuncionario, fkEmpresa);
                     sqlserver.registrarTemperaturaCpu(dataHoraRegistro, temperaturaCpu, tipoRegistroTemperatura, fkEspecificacaoComponenteProcessador, fkComponenteProcessador, fkMaquina, fkFuncionario, fkEmpresa, statusRegistroTemperaturaCpu);
 
                     mysql.registrarEspacoDisponivelEmDisco(dataHoraRegistro, espacoDisponivel, tipoRegistroDisco, fkEspecificacaoComponenteDisco, fkComponenteDisco, fkMaquina, fkFuncionario, fkEmpresa);
                     mysql.registrarMemoriaEmUso(dataHoraRegistro, memoriaEmUso, tipoRegistroMemoria, fkEspecificacaoComponenteMemoria, fkComponenteMemoria, fkMaquina, fkFuncionario, fkEmpresa);
                     mysql.registrarUsoProcessador(dataHoraRegistro, usoProcessador, tipoRegistroUsoProcessador, fkEspecificacaoComponenteProcessador, fkComponenteProcessador, fkMaquina, fkFuncionario, fkEmpresa);
-                    mysql.registrarTotalProcessos(dataHoraRegistro, totalProcessos.doubleValue(), tipoRegistroQtdeProcessos, fkEspecificacaoComponenteProcessador, fkComponenteProcessador, fkMaquina, fkFuncionario, fkEmpresa);
+                    mysql.registrarTotalProcessos(dataHoraRegistro, (double) totalProcessos, tipoRegistroQtdeProcessos, fkEspecificacaoComponenteProcessador, fkComponenteProcessador, fkMaquina, fkFuncionario, fkEmpresa);
                     mysql.registrarTemperaturaCpu(dataHoraRegistro, temperaturaCpu, tipoRegistroTemperatura, fkEspecificacaoComponenteProcessador, fkComponenteProcessador, fkMaquina, fkFuncionario, fkEmpresa);
-
 
                     System.out.println("Captura realizada.");
 
                     try {
                         if (System.in.available() > 0) {
-                            System.out.println(String.format("""
-                                        ----------------------------------------------------------------
-                                                           ENCERRANDO MONITORAMENTO...
-                                        ----------------------------------------------------------------
-                                        """));
+                            System.out.println("""
+                                    ----------------------------------------------------------------
+                                                       ENCERRANDO MONITORAMENTO...
+                                    ----------------------------------------------------------------
+                                    """);
                             sqlserver.deslogar(funcionarioLogado);
                             timer.cancel();
                             System.exit(0);
                         }
                     } catch (IOException e) {
-                        throw new RuntimeException(e);
+                        e.printStackTrace();
                     }
                 }
             }
         };
 
-        long delay = 5000; // 30 segundos
-        long period = 1000; // 30 segundos
+        long delay = 30000; // 30 segundos
+        long period = 10000; // 30 segundos
 
         timer.scheduleAtFixedRate(task, delay, period);
+    }
+
+    private static void enviarMensagemSlack(String mensagem) {
+        JSONObject json = new JSONObject();
+        json.put("text", mensagem);
+        try {
+            Slack.enviarMensagem(json);
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
