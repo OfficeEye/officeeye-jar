@@ -9,7 +9,7 @@ public class ConexaoSql {
     public ConexaoSql() {
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-        dataSource.setUrl("jdbc:sqlserver://100.28.96.116:1433;database=officeEye;trustServerCertificate=true");
+        dataSource.setUrl("jdbc:sqlserver://100.28.96.116:1433;database=dbOfficeEye;trustServerCertificate=true");
         dataSource.setUsername("officeeye");
         dataSource.setPassword("123");
 
