@@ -29,8 +29,6 @@ public class BdSqlServer {
             funcionario.setEmail(funcionarios.get(0).getEmail());
             funcionario.setSenha(funcionarios.get(0).getSenha());
             funcionario.setFkEmpresa(funcionarios.get(0).getFkEmpresa());
-
-            System.out.println(funcionario.getIdFuncionario());
         }
 
         return existeFuncionario;

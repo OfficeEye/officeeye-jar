@@ -116,6 +116,7 @@ public class AreaLoginFuncionarioGeral {
 
                     // memória
                     Double memoriaEmUso = looca.getMemoria().getEmUso().doubleValue() / conversorGb;
+
                     String tipoRegistroMemoria = "Memória em uso";
                     Integer fkEspecificacaoComponenteMemoria = especificacoes.get(1).getIdEspecificacaoComponente();
                     Integer fkComponenteMemoria = especificacoes.get(1).getFkComponente();
@@ -136,7 +137,7 @@ public class AreaLoginFuncionarioGeral {
                     //processador
                     Double usoProcessador = looca.getProcessador().getUso().doubleValue();
                     Integer totalProcessos = looca.getGrupoDeProcessos().getTotalProcessos();
-                    Double temperaturaCpu = looca.getTemperatura().getTemperatura();
+                    Double temperaturaCpu =  looca.getTemperatura().getTemperatura();;
                     String tipoRegistroUsoProcessador = "Uso do processador";
                     String tipoRegistroQtdeProcessos = "Total de processos";
                     String tipoRegistroTemperatura = "Temperatura da CPU";
@@ -200,8 +201,8 @@ public class AreaLoginFuncionarioGeral {
             }
         };
 
-        long delay = 30000; // 30 segundos
-        long period = 10000; // 30 segundos
+        long delay = 2000; // 30 segundos
+        long period = 30000; // 30 segundos
 
         timer.scheduleAtFixedRate(task, delay, period);
     }
