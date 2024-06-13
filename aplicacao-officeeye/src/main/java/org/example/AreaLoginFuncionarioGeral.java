@@ -137,7 +137,7 @@ public class AreaLoginFuncionarioGeral {
                     //processador
                     Double usoProcessador = looca.getProcessador().getUso().doubleValue();
                     Integer totalProcessos = looca.getGrupoDeProcessos().getTotalProcessos();
-                    Double temperaturaCpu =  looca.getTemperatura().getTemperatura();;
+                    Double temperaturaCpu = looca.getTemperatura().getTemperatura();
                     String tipoRegistroUsoProcessador = "Uso do processador";
                     String tipoRegistroQtdeProcessos = "Total de processos";
                     String tipoRegistroTemperatura = "Temperatura da CPU";
